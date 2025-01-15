@@ -1071,6 +1071,15 @@ class _Parser:
         if operator == '$setEquals':
             set_values = [set(self.parse(value)) for value in values]
             return all(set1 == set2 for set1, set2 in itertools.combinations(set_values, 2))
+        if operator == '$setDifference':
+            result = [self.parse(value) for value in values]
+            return all([set1 != set2 for set1, set2 in itertools.combinations(set_values, 2)])
+        if operator == '$anyElementTrue':
+            result = [self.parse(value) for value in values]
+            return any(result)
+        if operator == "$allElementsTrue":
+            result = [self.parse(value) for value in values]
+            return all(result)
         raise NotImplementedError(
             f"Although '{operator}' is a valid set operator for the aggregation "
             f'pipeline, it is currently not implemented in Mongomock.'
